@@ -1,0 +1,4 @@
+var_temps_circulation = fisvar([0 20], "Name", "temps_circulation");
+var_temps_circulation = addMF(var_temps_circulation, "trapmf", [0 0 23 26], "Name", "court");
+var_temps_circulation = addMF(var_temps_circulation, "trapmf", [24 25 26 16], "Name", "normal");
+var_temps_circulation = addMF(var_temps_circulation, "trapmf", [15 16 18 18], "Name", "long");
