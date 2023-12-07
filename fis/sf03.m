@@ -1,7 +1,6 @@
 run("vars/nb_arret.m");
 run("vars/personnes_autres_lignes.m");
 
-
 run("vars/nb_p_changer_ligne.m");
 
 fis_sf03 = mamfis("Name", "sf03");
