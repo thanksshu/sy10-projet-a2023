@@ -1,14 +1,14 @@
-run("vars/ressentie_meteo.m");
-run("vars/envie_de_sortir.m");
+run("vars/nb_tot_personne_ligne.m");
+run("vars/coeff_econo_ecolo.m");
 
-run("vars/choix_prendre_le_bus.m");
+run("vars/nb_bus_envoye.m");
 
-fis_sf08 = mamfis("Name", "sf07");
-fis_sf08.inputs(1) = var_ressentie_meteo;
-fis_sf08.inputs(2) = var_envie_de_sortir;
+fis_sf10 = mamfis("Name", "sf10");
+fis_sf10.inputs(1) = var_nb_tot_personne_ligne;
+fis_sf10.inputs(2) = var_coeff_econo_ecolo;
 
-fis_sf08.outputs(1) = var_choix_prendre_le_bus;
+fis_sf10.outputs(1) = var_nb_bus_envoye;
 
-table = [1 1 2 1; 1 3 3 2; 2 4 4 2; 2 3 3 2; 1 2 2 1];
+table = [2 2 1; 3 2 2; 4 3 3; 5 4 4];
 
-fis_sf08 = addRule(fis_sf08, gen_rules_from_table(table));
+fis_sf10 = addRule(fis_sf10, gen_rules_from_table(table));
