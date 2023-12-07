@@ -3,7 +3,7 @@ run("vars/envie_de_sortir.m");
 
 run("vars/choix_prendre_le_bus.m");
 
-fis_sf08 = mamfis("Name", "sf07");
+fis_sf08 = mamfis("Name", "sf08");
 fis_sf08.inputs(1) = var_ressentie_meteo;
 fis_sf08.inputs(2) = var_envie_de_sortir;
 
