@@ -1,4 +1,4 @@
-function out = defuzzy(fis, x, consequent)
+function mf_final = gen_consequent_final(fis, x, consequent)
     mfs = fis.outputs(1).mf;
     mf_final = zeros(1, length(x));
     for i = 1:length(mfs)
@@ -8,5 +8,4 @@ function out = defuzzy(fis, x, consequent)
         mf_tronq(mf_tronq > consequent(i)) = consequent(i); % T-trocature
         mf_final = max(mf_tronq, mf_final); % Max-union
     end
-    out = defuzz(x, mf_final, "centroid");
 end

@@ -2,12 +2,12 @@ run("vars/nb_bus.m");
 run("vars/autonomie_bus.m");
 run("vars/temps_circulation.m");
 
-run("vars/choix_prendre_le_bus.m");
+run("vars/nb_bus_2h.m");
 
 fis_sf06 = mamfis("Name", "sf06");
 fis_sf06.inputs(1) = var_nb_bus;
 fis_sf06.inputs(2) = var_autonomie_bus;
-fis_sf06.inputs(3) = temps_circulation;
+fis_sf06.inputs(3) = var_temps_circulation;
 
 
 fis_sf06.outputs(1) = var_nb_bus_2h;

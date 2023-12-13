@@ -7,7 +7,7 @@ run("vars/nb_chauffeur_2h.m");
 fis_sf05 = mamfis("Name", "sf05");
 fis_sf05.inputs(1) = var_nb_chauffeur;
 fis_sf05.inputs(2) = var_pause_chauffeur;
-fis_sf05.inputs(3) = temps_circulation;
+fis_sf05.inputs(3) = var_temps_circulation;
 
 fis_sf05.outputs(1) = var_nb_chauffeur_2h;
 
