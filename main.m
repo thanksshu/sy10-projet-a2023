@@ -19,79 +19,113 @@ run("fis/sf09.m");
 run("fis/sf10.m");
 
 %% 
-range_nb_personnes = 0:100;
-range_choix_prendre_le_bus = 0:0.01:1;
+range = 0:0.01:500;
 
 entree = jsondecode(fileread("input.json"));
 
-%% 
 nb_ligne = length(entree.lignes);
-nb_personne_in_bus_pour_chaque_ligne = zeros(nb_ligne, 1);
-
-for ligne = 1:nb_ligne
-    % SF01: trois entrées scalaires
-    [~, irr_sf01, ~, ~] = evalfis(fis_sf01, ...
-        [entree.vent, entree.pluie, entree.temperature]);
-    ressentie_meteo = gen_consequent(fis_sf01, irr_sf01);
-
-    % SF02 : deux entrées scalaires
-    [~, irr_sf02, ~, ~] = evalfis(fis_sf02, ...
-        [entree.etat_du_ciel, entree.jour_nuit]);
-    luminosite = gen_consequent(fis_sf02, irr_sf02);
-
-    % CAF01: deux entrées floue
-    horaires_quotidiens = trimf(range_nb_personnes, ...
-        entree.lignes(ligne).horaire_quotidien);
-    evenement_exceptionnel = trimf(range_nb_personnes, ...
-        entree.lignes(ligne).evenement_exceptionnel);
-    evenement_prevu = fuzarith(range_nb_personnes, ...
-        horaires_quotidiens, evenement_exceptionnel, "sum");
-
-    % SF07 : une entrée scalaire et une entrée consequent
-    degrees_neige_au_sol = evalvar(fis_sf07.inputs(1), ...
-        entree.neige_au_sol);
-    irr_sf07 = gen_irr(fis_sf07, ...
-        {degrees_neige_au_sol, luminosite});
-    envie_de_sortir = gen_consequent(fis_sf07, irr_sf07);
-
-    % SF08 : deux entrées consequent
-    irr_sf08 = gen_irr(fis_sf08, ...
-        {ressentie_meteo, envie_de_sortir});
-    choix_prendre_le_bus = gen_consequent(fis_sf08, irr_sf08);
-    choix_prendre_le_bus = gen_consequent_final(fis_sf08, ...
-        range_choix_prendre_le_bus, choix_prendre_le_bus);
-
-    % CAF03 : une entrée scalaire et une entrée floue
-    nb_personne_in_bus = fuzarith(range_nb_personnes, ...
-        choix_prendre_le_bus, evenement_prevu, "prod"); % TODO
-end
-
+discrete_nbs_personne_in_bus = zeros(nb_ligne, length(range));
+nb_bus_envoye_pour_chaque_ligne = zeros(1, nb_ligne);
 
 %% 
 
-% SF03 : une entrée scalaire et une entrée consequent
-% TODO
+% SF01: trois entrées scalaires
+[~, irr_sf01, ~, ~] = evalfis(fis_sf01, ...
+    [entree.vent, entree.pluie, entree.temperature]);
+degrees_ressentie_meteo = gen_degree_declenchement(fis_sf01, irr_sf01);
 
-% SF09 : deux entrées consequent
-irr_sf09 = gen_irr(fis_sf09, ...
-    {nb_personne_in_bus, nb_p_changer_ligne});
-nb_tot_personne_ligne_bus = gen_consequent(fis_sf09, irr_sf09);
+% SF02 : deux entrées scalaires
+[~, irr_sf02, ~, ~] = evalfis(fis_sf02, ...
+    [entree.etat_du_ciel, entree.jour_nuit]);
+degrees_luminosite = gen_degree_declenchement(fis_sf02, irr_sf02);
+
+% SF07 : une entrée scalaire et une entrée consequent
+degrees_neige_au_sol = evalvar_scalar(fis_sf07.inputs(1), ...
+    entree.neige_au_sol);
+irr_sf07 = gen_irr(fis_sf07, ...
+    {degrees_neige_au_sol, degrees_luminosite});
+degrees_envie_de_sortir = gen_degree_declenchement(fis_sf07, irr_sf07);
+
+% SF08 : deux entrées consequent
+irr_sf08 = gen_irr(fis_sf08, ...
+    {degrees_ressentie_meteo, degrees_envie_de_sortir});
+degrees_choix_prendre_le_bus = gen_degree_declenchement(fis_sf08, irr_sf08);
+discrete_choix_prendre_le_bus = gen_consequent_final(fis_sf08, ...
+    range, degrees_choix_prendre_le_bus);
+
+%%
 
 % SF04 : deux entrées scalaires
-[~, irr_sf04, ~, ~] = evalfis(fis_sf04, [pollution prix_essence]);
-coeff_econo_ecolo = gen_consequent(fis_sf04, irr_sf04);
+[~, irr_sf04, ~, ~] = evalfis(fis_sf04, [entree.pollution entree.prix_essence]);
+degrees_coeff_econo_ecolo = gen_degree_declenchement(fis_sf04, irr_sf04);
 
-% SF10 : deux entrées consequent
-irr_sf10 = gen_irr(fis_sf10, ...
-    {nb_tot_personne_ligne_bus, coeff_econo_ecolo});
-nb_bus_envoye = gen_consequent(fis_sf10, irr_sf10);
+%%
+
+for ligne = 1:nb_ligne
+    % CAF01: deux entrées floue
+    horaires_quotidiens = trimf(range, ...
+        entree.lignes(ligne).horaire_quotidien);
+    evenement_exceptionnel = trimf(range, ...
+        entree.lignes(ligne).evenement_exceptionnel);
+    
+    discrete_evenement_prevu = fuzarith(range, ...
+        horaires_quotidiens, evenement_exceptionnel, "sum")';
+
+    % CAF03 : une entrée scalaire et une entrée floue discrète
+    discrete_nbs_personne_in_bus(ligne, :) = fuzarith(range, ...
+        discrete_choix_prendre_le_bus, discrete_evenement_prevu, "prod")';
+end
 
 %% 
 
+for ligne = 1:nb_ligne
+    % SF03 : une entrée scalaire et une entrée floue discrète
+    init = 0;
+    for i = 1:nb_ligne
+        if i == ligne
+            continue
+        end
+        if init == 0
+            discrete_personnes_autres_lignes = discrete_nbs_personne_in_bus(i, :);
+            init = 1;
+        else
+            discrete_personnes_autres_lignes = fuzarith(range, ...
+                discrete_personnes_autres_lignes, ...
+                 discrete_nbs_personne_in_bus(i, :), "sum")';
+        end
+    end
+    
+    degrees_nb_arret = evalvar_scalar(fis_sf03.inputs(1), ...
+    entree.lignes(ligne).nb_arret);
+    degrees_personnes_autres_lignes = evalvar_fuzzy(fis_sf03.inputs(2), ...
+        range, discrete_personnes_autres_lignes);
+    irr_sf03 = gen_irr(fis_sf03, ...
+        {degrees_nb_arret, degrees_personnes_autres_lignes});
+    degrees_nb_p_changer_ligne = gen_degree_declenchement(fis_sf03, irr_sf03);
+
+    % SF09 : une entrées consequent et une entrée floue discrète
+    degrees_nb_personne_in_bus = evalvar_fuzzy(fis_sf09.inputs(1), ...
+        range, discrete_nbs_personne_in_bus(ligne, :));
+    irr_sf09 = gen_irr(fis_sf09, ...
+        {degrees_nb_personne_in_bus, degrees_nb_p_changer_ligne});
+    degrees_nb_tot_personne_ligne_bus = gen_degree_declenchement(fis_sf09, irr_sf09);
+
+    % SF10 : deux entrées consequent
+    irr_sf10 = gen_irr(fis_sf10, ...
+        {degrees_nb_tot_personne_ligne_bus, degrees_coeff_econo_ecolo});
+     degrees_nb_bus_envoye = gen_degree_declenchement(fis_sf10, irr_sf10);
+     discrete_nb_bus_envoye = gen_consequent_final(fis_sf10, range, degrees_nb_bus_envoye);
+     nb_bus_envoye_pour_chaque_ligne(ligne) = defuzz(range, discrete_nb_bus_envoye, 'centroid');
+end
+
+%%
+
 % SF05: trois entrées scalaires
-[~, irr_sf05, ~, ~] = evalfis(fis_sf05, [nb_chauffeur pause_chauffeur temps_circulation]);
-nb_chauffeur_2h = gen_consequent(fis_sf05, irr_sf05);
+[~, irr_sf05, ~, ~] = evalfis(fis_sf05, ...
+    [entree.nb_chauffeur entree.pause_chauffeur entree.temps_circulation]);
+degrees_nb_chauffeur_2h = gen_degree_declenchement(fis_sf05, irr_sf05);
 
 % SF06: trois entrées scalaires
-[~, irr_sf06, ~, ~] = evalfis(fis_sf06, [temps_circulation nb_bus autonomie_bus]);
-nb_bus_2h = gen_consequent(fis_sf06, irr_sf06);
+[~, irr_sf06, ~, ~] = evalfis(fis_sf06, ...
+    [entree.temps_circulation entree.nb_bus entree.autonomie_bus]);
+degrees_nb_bus_2h = gen_degree_declenchement(fis_sf06, irr_sf06);

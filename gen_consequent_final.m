@@ -4,7 +4,7 @@ function mf_final = gen_consequent_final(fis, x, consequent)
     for i = 1:length(mfs)
         mf_par = mfs(i);
         mf_func = str2func(mf_par.type);
-        mf_tronq = mf_func(x, mf_par.parameters);
+        mf_tronq = mf_func(x, mf_par.parameters); % Prepa pour T-trocature
         mf_tronq(mf_tronq > consequent(i)) = consequent(i); % T-trocature
         mf_final = max(mf_tronq, mf_final); % Max-union
     end
