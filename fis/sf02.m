@@ -9,6 +9,6 @@ fis_sf02.inputs(2) = var_jour_nuit;
 
 fis_sf02.outputs(1) = var_luminosite;
 
-table = [2 3 4 3; 1 2 3 2; 1 1 2 1];
+table = [2 3 4 3; 2 2 3 2; 1 2 2 1; 1 1 2 1];
 
 fis_sf02 = addRule(fis_sf02, gen_rules_from_table(table));
