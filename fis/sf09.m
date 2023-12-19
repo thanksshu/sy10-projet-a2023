@@ -9,6 +9,6 @@ fis_sf09.inputs(2) = var_nb_p_changer_ligne;
 
 fis_sf09.outputs(1) = var_nb_tot_personne_ligne_bus;
 
-table = [1 1 2 ; 2 2 3 ; 3 3 4];
+table = [1 1 2 ; 1 2 3 ; 2 2 4];
 
 fis_sf09 = addRule(fis_sf09, gen_rules_from_table(table));
