@@ -144,8 +144,9 @@ disp("nb_bus_2h = " + nb_bus_2h);
 disp("nb_chauffeur_2h = " + nb_chauffeur_2h);
 disp(nb_bus_envoye_pour_chaque_ligne);
 
-while (sum(round(nb_bus_envoye_pour_chaque_ligne)) < min(nb_bus_2h, nb_chauffeur_2h)) == 0
-   nb_bus_envoye_pour_chaque_ligne = nb_bus_envoye_pour_chaque_ligne - resolution;
+while (sum(round(nb_bus_envoye_pour_chaque_ligne)) <= min(nb_bus_2h, nb_chauffeur_2h)) == 0
+   nb_bus_envoye_pour_chaque_ligne = ...
+       nb_bus_envoye_pour_chaque_ligne(nb_bus_envoye_pour_chaque_ligne > 0.5) - resolution;
 end
 
 disp(round(nb_bus_envoye_pour_chaque_ligne));
