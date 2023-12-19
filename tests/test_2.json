@@ -11,14 +11,14 @@
     "pause_chauffeur": 20,
     "nb_bus": 35,
     "autonomie_bus": 470,
-    "temps_circulation": [30, 40, 60, 80],
+    "temps_circulation": [37, 40, 45, 50],
     "lignes": [
         {
             "horaire_quotidien": [
-                20,
-                30,
-                30,
-                50
+                200,
+                300,
+                300,
+                500
             ],
             "evenement_exceptionnel": [
                 10,
@@ -36,7 +36,7 @@
                 40
             ],
             "evenement_exceptionnel": [
-                0,
+                5,
                 10,
                 10,
                 20

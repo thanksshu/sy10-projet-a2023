@@ -7,9 +7,9 @@
     "jour_nuit": 18,
     "pollution": 80,
     "prix_essence": 1.2,
-    "nb_chauffeur": 19,
+    "nb_chauffeur": 25,
     "pause_chauffeur": 19,
-    "nb_bus": 19,
+    "nb_bus": 25,
     "autonomie_bus": 470,
     "temps_circulation": [40, 55, 70, 80],
     "lignes": [
