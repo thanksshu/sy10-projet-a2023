@@ -11,7 +11,12 @@
     "pause_chauffeur": 15,
     "nb_bus": 20,
     "autonomie_bus": 470,
-    "temps_circulation": [20, 25, 30, 40],
+    "temps_circulation": [
+        20,
+        25,
+        30,
+        40
+    ],
     "lignes": [
         {
             "horaire_quotidien": [
@@ -43,7 +48,7 @@
             ],
             "nb_arret": 20
         },
-		{
+        {
             "horaire_quotidien": [
                 65,
                 90,
@@ -58,7 +63,7 @@
             ],
             "nb_arret": 30
         },
-		{
+        {
             "horaire_quotidien": [
                 35,
                 45,

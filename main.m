@@ -63,13 +63,13 @@ degrees_coeff_econo_ecolo = gen_degree_declenchement(fis_sf04, irr_sf04);
 
 for ligne = 1:nb_ligne
     % CAF01: deux entrées floue
-    horaires_quotidiens = trapmf(range, ...
+    discrete_horaires_quotidiens = trapmf(range, ...
         entree.lignes(ligne).horaire_quotidien);
-    evenement_exceptionnel = trapmf(range, ...
+    discrete_evenement_exceptionnel = trapmf(range, ...
         entree.lignes(ligne).evenement_exceptionnel);
     
     discrete_evenement_prevu = fuzarith(range, ...
-        horaires_quotidiens, evenement_exceptionnel, "sum")';
+        discrete_horaires_quotidiens, discrete_evenement_exceptionnel, "sum")';
 
     % CAF03 : une entrée scalaire et une entrée floue discrète
     discrete_nbs_personne_in_bus(ligne, :) = fuzarith(range, ...
@@ -113,9 +113,10 @@ for ligne = 1:nb_ligne
     irr_sf10 = gen_irr(fis_sf10, ...
         {degrees_nb_tot_personne_ligne_bus, degrees_coeff_econo_ecolo});
     degrees_nb_bus_envoye = gen_degree_declenchement(fis_sf10, irr_sf10);
+    
     discrete_nb_bus_envoye = gen_consequent_final(fis_sf10, range, degrees_nb_bus_envoye);
-    nb_bus_envoye_pour_chaque_ligne(ligne) = round(defuzz(range, ...
-        discrete_nb_bus_envoye, "centroid"));
+    nb_bus_envoye_pour_chaque_ligne(ligne) = defuzz(range, ...
+        discrete_nb_bus_envoye, "centroid");
 end
 
 %%
@@ -133,6 +134,7 @@ entree.pause_chauffeur);
 irr_sf05 = gen_irr(fis_sf05, ...
     {degrees_nb_chauffeur, degrees_pause_chauffeur, degrees_temps_circulation});
 degrees_nb_chauffeur_2h = gen_degree_declenchement(fis_sf05, irr_sf05);
+
 discrete_nb_chauffeur_2h = gen_consequent_final(fis_sf05, range, degrees_nb_chauffeur_2h);
 nb_chauffeur_2h = round(defuzz(range, discrete_nb_chauffeur_2h, "centroid"));
 
@@ -144,8 +146,14 @@ entree.autonomie_bus);
 irr_sf06 = gen_irr(fis_sf06, ...
     {degrees_nb_bus, degrees_autonomie_bus, degrees_temps_circulation});
 degrees_nb_bus_2h = gen_degree_declenchement(fis_sf06, irr_sf06);
+
 discrete_nb_bus_2h = gen_consequent_final(fis_sf06, range, degrees_nb_bus_2h);
 nb_bus_2h = round(defuzz(range, discrete_nb_bus_2h, "centroid"));
 
-disp(nb_bus_envoye_pour_chaque_ligne + ", " + nb_bus_2h + ", " + nb_chauffeur_2h)
-sum(nb_bus_envoye_pour_chaque_ligne) < min(nb_bus_2h, nb_chauffeur_2h)
+disp(nb_bus_2h);
+disp(nb_chauffeur_2h);
+
+while (sum(round(nb_bus_envoye_pour_chaque_ligne)) < min(nb_bus_2h, nb_chauffeur_2h)) == 0
+   nb_bus_envoye_pour_chaque_ligne = nb_bus_envoye_pour_chaque_ligne - 0.01;
+end
+disp(round(nb_bus_envoye_pour_chaque_ligne));
