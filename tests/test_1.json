@@ -31,7 +31,7 @@
                 100,
                 160
             ],
-            "nb_arret": 27
+            "nb_arret": 49
         },
         {
             "horaire_quotidien": [
@@ -46,7 +46,7 @@
                 50,
                 60
             ],
-            "nb_arret": 20
+            "nb_arret": 64
         },
         {
             "horaire_quotidien": [
@@ -61,7 +61,7 @@
                 65,
                 100
             ],
-            "nb_arret": 30
+            "nb_arret": 28
         },
         {
             "horaire_quotidien": [
@@ -76,7 +76,37 @@
                 20,
                 25
             ],
-            "nb_arret": 19
+            "nb_arret": 29
+        },
+        {
+            "horaire_quotidien": [
+                35,
+                45,
+                45,
+                60
+            ],
+            "evenement_exceptionnel": [
+                15,
+                20,
+                20,
+                25
+            ],
+            "nb_arret": 42
+        },
+        {
+            "horaire_quotidien": [
+                35,
+                45,
+                45,
+                60
+            ],
+            "evenement_exceptionnel": [
+                15,
+                20,
+                20,
+                25
+            ],
+            "nb_arret": 68
         }
     ]
 }
