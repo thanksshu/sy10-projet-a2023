@@ -4,11 +4,7 @@ close all;
 
 %% 
 
-<<<<<<< HEAD
 entree = jsondecode(fileread("tests/test_3.json"));
-=======
-entree = jsondecode(fileread("tests/test_5.json"));
->>>>>>> fb7390449e9c6d5c165e92fd32c19cabcb3aac06
 
 addpath("fis");
 addpath("fis/vars");
