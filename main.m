@@ -4,7 +4,7 @@ close all;
 
 %% 
 
-entree = jsondecode(fileread("tests/test_1.json"));
+entree = jsondecode(fileread("tests/test_3.json"));
 
 addpath("fis");
 addpath("fis/vars");
@@ -85,10 +85,12 @@ end
 
 %% 
 
+nbs_personne_in_bus
+
 nb_bus_envoye_pour_chaque_ligne = zeros(1, nb_ligne);
 for ligne = 1:nb_ligne
     % SF03 : une entrée scalaire et une entrée floue discrète
-    personnes_autres_lignes = sum(nbs_personne_in_bus) - nbs_personne_in_bus(ligne);
+    personnes_autres_lignes = (sum(nbs_personne_in_bus) - nbs_personne_in_bus(ligne));
     [~, irr_sf03, ~, ~] = evalfis(fis_sf03, [entree.lignes(ligne).nb_arret personnes_autres_lignes]);
     degrees_nb_p_changer_ligne = gen_degree_declenchement(fis_sf03, irr_sf03);
 
@@ -144,9 +146,4 @@ disp("nb_bus_2h = " + nb_bus_2h);
 disp("nb_chauffeur_2h = " + nb_chauffeur_2h);
 disp(nb_bus_envoye_pour_chaque_ligne);
 
-while (sum(round(nb_bus_envoye_pour_chaque_ligne)) <= min(nb_bus_2h, nb_chauffeur_2h)) == 0
-   nb_bus_envoye_pour_chaque_ligne = ...
-       nb_bus_envoye_pour_chaque_ligne(nb_bus_envoye_pour_chaque_ligne > 0.5) - resolution;
-end
-
-disp(round(nb_bus_envoye_pour_chaque_ligne));
+disp(ceil(nb_bus_envoye_pour_chaque_ligne));
