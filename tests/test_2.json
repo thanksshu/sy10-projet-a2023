@@ -2,29 +2,29 @@
     "temperature": 23.3,
     "etat_du_ciel": 1,
     "vent": 20,
-    "pluie": 5.6,
+    "pluie": 1,
     "neige_au_sol": 0,
     "jour_nuit": 10.5,
-    "pollution": 35,
+    "pollution": 20,
     "prix_essence": 0.8,
-    "nb_chauffeur": 25,
+    "nb_chauffeur": 35,
     "pause_chauffeur": 15,
-    "nb_bus": 20,
+    "nb_bus": 35,
     "autonomie_bus": 470,
     "temps_circulation": [20, 25, 30, 40],
     "lignes": [
         {
             "horaire_quotidien": [
-                80,
-                120,
-                120,
-                130
+                20,
+                30,
+                30,
+                50
             ],
             "evenement_exceptionnel": [
-                50,
-                100,
-                100,
-                160
+                10,
+                16,
+                16,
+                20
             ],
             "nb_arret": 49
         },

@@ -9,6 +9,6 @@ fis_sf08.inputs(2) = var_envie_de_sortir;
 
 fis_sf08.outputs(1) = var_choix_prendre_le_bus;
 
-table = [1 1 2 1; 1 3 3 2; 2 4 4 2; 2 3 3 2; 1 2 2 1];
+table = [1 1 2 3; 1 2 3 3; 2 3 4 4; 2 4 4 4; 3 3 3 4];
 
 fis_sf08 = addRule(fis_sf08, gen_rules_from_table(table));

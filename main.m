@@ -81,7 +81,7 @@ end
 for ligne = 1:nb_ligne
     % SF03 : une entrée scalaire et une entrée floue discrète
     init = 0;
-    for i = 1:nb_ligne
+    for i = 1:nb_ligne    
         if i == ligne
             continue
         end
@@ -94,6 +94,8 @@ for ligne = 1:nb_ligne
                  discrete_nbs_personne_in_bus(i, :), "sum")';
         end
     end
+
+    
     degrees_nb_arret = evalvar_scalar(fis_sf03.inputs(1), ...
     entree.lignes(ligne).nb_arret);
     degrees_personnes_autres_lignes = evalvar_fuzzy(fis_sf03.inputs(2), ...
