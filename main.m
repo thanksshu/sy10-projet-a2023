@@ -152,10 +152,14 @@ degrees_nb_bus_2h = gen_degree_declenchement(fis_sf06, irr_sf06);
 discrete_nb_bus_2h = gen_consequent_final(fis_sf06, range, degrees_nb_bus_2h);
 nb_bus_2h = round(defuzz(range, discrete_nb_bus_2h, "centroid"));
 
-disp(nb_bus_2h);
-disp(nb_chauffeur_2h);
+%%
+
+disp("nb_bus_2h = " + nb_bus_2h);
+disp("nb_chauffeur_2h = " + nb_chauffeur_2h);
+disp(nb_bus_envoye_pour_chaque_ligne);
 
 while (sum(round(nb_bus_envoye_pour_chaque_ligne)) < min(nb_bus_2h, nb_chauffeur_2h)) == 0
    nb_bus_envoye_pour_chaque_ligne = nb_bus_envoye_pour_chaque_ligne - 0.01;
 end
+
 disp(round(nb_bus_envoye_pour_chaque_ligne));
