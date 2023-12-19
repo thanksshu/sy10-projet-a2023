@@ -1,47 +1,77 @@
 {
     "temperature": 23.3,
     "etat_du_ciel": 1,
-    "vent": 4,
-    "pluie": 5,
+    "vent": 20,
+    "pluie": 5.6,
     "neige_au_sol": 0,
     "jour_nuit": 10.5,
-    "pollution": 60,
+    "pollution": 35,
     "prix_essence": 0.8,
-    "nb_chauffeur": 20,
+    "nb_chauffeur": 25,
     "pause_chauffeur": 15,
-    "nb_bus": 10,
-    "autonomie_bus": 50,
-    "temps_circulation": [10, 20, 30, 40],
+    "nb_bus": 20,
+    "autonomie_bus": 470,
+    "temps_circulation": [20, 25, 30, 40],
     "lignes": [
         {
             "horaire_quotidien": [
-                25,
-                35,
-                35,
-                45
+                80,
+                120,
+                120,
+                130
             ],
             "evenement_exceptionnel": [
-                10,
-                20,
-                20,
-                30
+                50,
+                100,
+                100,
+                160
             ],
-            "nb_arret": 5
+            "nb_arret": 27
         },
         {
             "horaire_quotidien": [
+                85,
+                100,
+                100,
+                145
+            ],
+            "evenement_exceptionnel": [
+                30,
+                50,
+                50,
+                60
+            ],
+            "nb_arret": 20
+        },
+		{
+            "horaire_quotidien": [
+                65,
+                90,
+                90,
+                110
+            ],
+            "evenement_exceptionnel": [
+                30,
+                65,
+                65,
+                100
+            ],
+            "nb_arret": 30
+        },
+		{
+            "horaire_quotidien": [
+                35,
+                45,
+                45,
+                60
+            ],
+            "evenement_exceptionnel": [
                 15,
                 20,
                 20,
                 25
             ],
-            "evenement_exceptionnel": [
-                20,
-                25,
-                25,
-                30
-            ],
-            "nb_arret": 8
+            "nb_arret": 19
         }
     ]
 }

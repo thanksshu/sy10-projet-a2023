@@ -21,7 +21,7 @@ run("fis/sf10.m");
 %% 
 range = 0:0.01:500;
 
-entree = jsondecode(fileread("tests/test_1.json"));
+entree = jsondecode(fileread("tests/test_2.json"));
 
 nb_ligne = length(entree.lignes);
 discrete_nbs_personne_in_bus = zeros(nb_ligne, length(range));
@@ -148,3 +148,4 @@ discrete_nb_bus_2h = gen_consequent_final(fis_sf06, range, degrees_nb_bus_2h);
 nb_bus_2h = round(defuzz(range, discrete_nb_bus_2h, "centroid"));
 
 disp(nb_bus_envoye_pour_chaque_ligne + ", " + nb_bus_2h + ", " + nb_chauffeur_2h)
+sum(nb_bus_envoye_pour_chaque_ligne) < min(nb_bus_2h, nb_chauffeur_2h)
