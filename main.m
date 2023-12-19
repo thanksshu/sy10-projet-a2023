@@ -4,6 +4,8 @@ close all;
 
 %% 
 
+entree = jsondecode(fileread("tests/test_2.json"));
+
 addpath("fis");
 addpath("fis/vars");
 
@@ -20,8 +22,6 @@ run("fis/sf10.m");
 
 %% 
 range = 0:0.01:500;
-
-entree = jsondecode(fileread("tests/test_2.json"));
 
 nb_ligne = length(entree.lignes);
 discrete_nbs_personne_in_bus = zeros(nb_ligne, length(range));
