@@ -4,7 +4,7 @@ close all;
 
 %% 
 
-entree = jsondecode(fileread("tests/test_2.json"));
+entree = jsondecode(fileread("tests/test_1.json"));
 
 addpath("fis");
 addpath("fis/vars");
@@ -21,11 +21,12 @@ run("fis/sf09.m");
 run("fis/sf10.m");
 
 %% 
-range = 0:0.01:500;
+resolution = 0.01;
+min_limit = 0; 
+max_limit = 1000;
+range = min_limit:resolution:max_limit;
 
 nb_ligne = length(entree.lignes);
-discrete_nbs_personne_in_bus = zeros(nb_ligne, length(range));
-nb_bus_envoye_pour_chaque_ligne = zeros(1, nb_ligne);
 
 %% 
 
@@ -53,6 +54,8 @@ degrees_choix_prendre_le_bus = gen_degree_declenchement(fis_sf08, irr_sf08);
 discrete_choix_prendre_le_bus = gen_consequent_final(fis_sf08, ...
     range, degrees_choix_prendre_le_bus);
 
+choix_prendre_le_bus = defuzz(range, discrete_choix_prendre_le_bus, "centroid");
+
 %%
 
 % SF04 : deux entrées scalaires
@@ -61,6 +64,7 @@ degrees_coeff_econo_ecolo = gen_degree_declenchement(fis_sf04, irr_sf04);
 
 %%
 
+nbs_personne_in_bus = zeros(1, nb_ligne);
 for ligne = 1:nb_ligne
     % CAF01: deux entrées floue
     discrete_horaires_quotidiens = trapmf(range, ...
@@ -72,43 +76,25 @@ for ligne = 1:nb_ligne
         discrete_horaires_quotidiens, discrete_evenement_exceptionnel, "sum")';
 
     % CAF03 : une entrée scalaire et une entrée floue discrète
-    discrete_nbs_personne_in_bus(ligne, :) = fuzarith(range, ...
+    discrete_choix_prendre_le_bus = zeros(1, length(range));
+    discrete_choix_prendre_le_bus(round(choix_prendre_le_bus / resolution)) = 1;
+    discrete_nb_personne_in_bus = fuzarith(range, ...
         discrete_choix_prendre_le_bus, discrete_evenement_prevu, "prod")';
+    nbs_personne_in_bus(ligne) = defuzz(range, discrete_nb_personne_in_bus, "centroid");
 end
 
 %% 
 
+nb_bus_envoye_pour_chaque_ligne = zeros(1, nb_ligne);
 for ligne = 1:nb_ligne
     % SF03 : une entrée scalaire et une entrée floue discrète
-    init = 0;
-    for i = 1:nb_ligne    
-        if i == ligne
-            continue
-        end
-        if init == 0
-            discrete_personnes_autres_lignes = discrete_nbs_personne_in_bus(i, :);
-            init = 1;
-        else
-            discrete_personnes_autres_lignes = fuzarith(range, ...
-                discrete_personnes_autres_lignes, ...
-                 discrete_nbs_personne_in_bus(i, :), "sum")';
-        end
-    end
-
-    
-    degrees_nb_arret = evalvar_scalar(fis_sf03.inputs(1), ...
-    entree.lignes(ligne).nb_arret);
-    degrees_personnes_autres_lignes = evalvar_fuzzy(fis_sf03.inputs(2), ...
-        range, discrete_personnes_autres_lignes);
-    irr_sf03 = gen_irr(fis_sf03, ...
-        {degrees_nb_arret, degrees_personnes_autres_lignes});
+    personnes_autres_lignes = sum(nbs_personne_in_bus) - nbs_personne_in_bus(ligne);
+    [~, irr_sf03, ~, ~] = evalfis(fis_sf03, [entree.lignes(ligne).nb_arret personnes_autres_lignes]);
     degrees_nb_p_changer_ligne = gen_degree_declenchement(fis_sf03, irr_sf03);
 
     % SF09 : une entrées consequent et une entrée floue discrète
-    degrees_nb_personne_in_bus = evalvar_fuzzy(fis_sf09.inputs(1), ...
-        range, discrete_nbs_personne_in_bus(ligne, :));
-    irr_sf09 = gen_irr(fis_sf09, ...
-        {degrees_nb_personne_in_bus, degrees_nb_p_changer_ligne});
+    degrees_nb_personne_in_bus = evalvar_scalar(fis_sf09.input(1), nbs_personne_in_bus(ligne));
+    irr_sf09 = gen_irr(fis_sf09, {degrees_nb_personne_in_bus , degrees_nb_p_changer_ligne});
     degrees_nb_tot_personne_ligne_bus = gen_degree_declenchement(fis_sf09, irr_sf09);
 
     % SF10 : deux entrées consequent
@@ -159,7 +145,7 @@ disp("nb_chauffeur_2h = " + nb_chauffeur_2h);
 disp(nb_bus_envoye_pour_chaque_ligne);
 
 while (sum(round(nb_bus_envoye_pour_chaque_ligne)) < min(nb_bus_2h, nb_chauffeur_2h)) == 0
-   nb_bus_envoye_pour_chaque_ligne = nb_bus_envoye_pour_chaque_ligne - 0.01;
+   nb_bus_envoye_pour_chaque_ligne = nb_bus_envoye_pour_chaque_ligne - resolution;
 end
 
 disp(round(nb_bus_envoye_pour_chaque_ligne));
