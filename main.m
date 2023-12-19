@@ -21,7 +21,7 @@ run("fis/sf10.m");
 %% 
 range = 0:0.01:500;
 
-entree = jsondecode(fileread("input.json"));
+entree = jsondecode(fileread("tests/test_1.json"));
 
 nb_ligne = length(entree.lignes);
 discrete_nbs_personne_in_bus = zeros(nb_ligne, length(range));
@@ -63,9 +63,9 @@ degrees_coeff_econo_ecolo = gen_degree_declenchement(fis_sf04, irr_sf04);
 
 for ligne = 1:nb_ligne
     % CAF01: deux entrées floue
-    horaires_quotidiens = trimf(range, ...
+    horaires_quotidiens = trapmf(range, ...
         entree.lignes(ligne).horaire_quotidien);
-    evenement_exceptionnel = trimf(range, ...
+    evenement_exceptionnel = trapmf(range, ...
         entree.lignes(ligne).evenement_exceptionnel);
     
     discrete_evenement_prevu = fuzarith(range, ...
@@ -94,7 +94,6 @@ for ligne = 1:nb_ligne
                  discrete_nbs_personne_in_bus(i, :), "sum")';
         end
     end
-    
     degrees_nb_arret = evalvar_scalar(fis_sf03.inputs(1), ...
     entree.lignes(ligne).nb_arret);
     degrees_personnes_autres_lignes = evalvar_fuzzy(fis_sf03.inputs(2), ...
@@ -113,19 +112,39 @@ for ligne = 1:nb_ligne
     % SF10 : deux entrées consequent
     irr_sf10 = gen_irr(fis_sf10, ...
         {degrees_nb_tot_personne_ligne_bus, degrees_coeff_econo_ecolo});
-     degrees_nb_bus_envoye = gen_degree_declenchement(fis_sf10, irr_sf10);
-     discrete_nb_bus_envoye = gen_consequent_final(fis_sf10, range, degrees_nb_bus_envoye);
-     nb_bus_envoye_pour_chaque_ligne(ligne) = defuzz(range, discrete_nb_bus_envoye, 'centroid');
+    degrees_nb_bus_envoye = gen_degree_declenchement(fis_sf10, irr_sf10);
+    discrete_nb_bus_envoye = gen_consequent_final(fis_sf10, range, degrees_nb_bus_envoye);
+    nb_bus_envoye_pour_chaque_ligne(ligne) = round(defuzz(range, ...
+        discrete_nb_bus_envoye, "centroid"));
 end
 
 %%
 
-% SF05: trois entrées scalaires
-[~, irr_sf05, ~, ~] = evalfis(fis_sf05, ...
-    [entree.nb_chauffeur entree.pause_chauffeur entree.temps_circulation]);
-degrees_nb_chauffeur_2h = gen_degree_declenchement(fis_sf05, irr_sf05);
+discrete_temps_circulation = trapmf(range, ...
+        entree.temps_circulation);
+degrees_temps_circulation = evalvar_fuzzy(fis_sf05.inputs(3), ...
+    range, discrete_temps_circulation);
 
-% SF06: trois entrées scalaires
-[~, irr_sf06, ~, ~] = evalfis(fis_sf06, ...
-    [entree.temps_circulation entree.nb_bus entree.autonomie_bus]);
+% SF05: deux entrées scalaires et une entrée floue 
+degrees_nb_chauffeur = evalvar_scalar(fis_sf05.inputs(1), ...
+entree.nb_chauffeur);
+degrees_pause_chauffeur = evalvar_scalar(fis_sf05.inputs(2), ...
+entree.pause_chauffeur);
+irr_sf05 = gen_irr(fis_sf05, ...
+    {degrees_nb_chauffeur, degrees_pause_chauffeur, degrees_temps_circulation});
+degrees_nb_chauffeur_2h = gen_degree_declenchement(fis_sf05, irr_sf05);
+discrete_nb_chauffeur_2h = gen_consequent_final(fis_sf05, range, degrees_nb_chauffeur_2h);
+nb_chauffeur_2h = round(defuzz(range, discrete_nb_chauffeur_2h, "centroid"));
+
+% SF06: deux entrées scalaires et une entrée floue
+degrees_nb_bus = evalvar_scalar(fis_sf06.inputs(1), ...
+entree.nb_bus);
+degrees_autonomie_bus = evalvar_scalar(fis_sf06.inputs(2), ...
+entree.autonomie_bus);
+irr_sf06 = gen_irr(fis_sf06, ...
+    {degrees_nb_bus, degrees_autonomie_bus, degrees_temps_circulation});
 degrees_nb_bus_2h = gen_degree_declenchement(fis_sf06, irr_sf06);
+discrete_nb_bus_2h = gen_consequent_final(fis_sf06, range, degrees_nb_bus_2h);
+nb_bus_2h = round(defuzz(range, discrete_nb_bus_2h, "centroid"));
+
+disp(nb_bus_envoye_pour_chaque_ligne + ", " + nb_bus_2h + ", " + nb_chauffeur_2h)
