@@ -23,7 +23,7 @@ run("fis/sf10.m");
 %% 
 resolution = 0.01;
 min_limit = 0; 
-max_limit = 1000;
+max_limit = 2000;
 range = min_limit:resolution:max_limit;
 
 nb_ligne = length(entree.lignes);
@@ -90,7 +90,7 @@ nbs_personne_in_bus
 nb_bus_envoye_pour_chaque_ligne = zeros(1, nb_ligne);
 for ligne = 1:nb_ligne
     % SF03 : une entrée scalaire et une entrée floue discrète
-    personnes_autres_lignes = (sum(nbs_personne_in_bus) - nbs_personne_in_bus(ligne));
+    personnes_autres_lignes = (sum(nbs_personne_in_bus) - nbs_personne_in_bus(ligne)) * 0.15;
     [~, irr_sf03, ~, ~] = evalfis(fis_sf03, [entree.lignes(ligne).nb_arret personnes_autres_lignes]);
     degrees_nb_p_changer_ligne = gen_degree_declenchement(fis_sf03, irr_sf03);
 
@@ -149,10 +149,10 @@ if min(nb_bus_2h, nb_chauffeur_2h) < 6
     disp("pas assez de bus ou de chauffeur pour pouvoir assurer le service");
 else
     disp(nb_bus_envoye_pour_chaque_ligne);
-    while (sum(round(nb_bus_envoye_pour_chaque_ligne)) <= min(nb_bus_2h, nb_chauffeur_2h)) == 0
+    while (sum(ceil(nb_bus_envoye_pour_chaque_ligne)) <= min(nb_bus_2h, nb_chauffeur_2h)) == 0
        nb_bus_envoye_pour_chaque_ligne = ...
            nb_bus_envoye_pour_chaque_ligne(nb_bus_envoye_pour_chaque_ligne > 0.5) - resolution;
     end
-    disp(round(nb_bus_envoye_pour_chaque_ligne));
+    disp(ceil(nb_bus_envoye_pour_chaque_ligne));
 end
 
