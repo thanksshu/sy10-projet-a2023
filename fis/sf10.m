@@ -9,6 +9,6 @@ fis_sf10.inputs(2) = var_coeff_econo_ecolo;
 
 fis_sf10.outputs(1) = var_nb_bus_envoye;
 
-table = [2 2 1; 3 2 2; 4 3 3; 4 4 5];
+table = [2 1 1; 3 2 2; 4 3 3; 4 5 5];
 
 fis_sf10 = addRule(fis_sf10, gen_rules_from_table(table));

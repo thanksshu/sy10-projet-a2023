@@ -1,12 +1,12 @@
 {
-    "temperature": -3,
+    "temperature": 15,
     "etat_du_ciel": 6,
     "vent": 25,
-    "pluie": 3,
-    "neige_au_sol": 4,
-    "jour_nuit": 3.5,
+    "pluie": 1,
+    "neige_au_sol": 0,
+    "jour_nuit": 20,
     "pollution": 200,
-    "prix_essence": 1.8,
+    "prix_essence": 1.6,
     "nb_chauffeur": 35,
     "pause_chauffeur": 20,
     "nb_bus": 35,
@@ -15,10 +15,10 @@
     "lignes": [
         {
             "horaire_quotidien": [
-                200,
-                300,
-                300,
-                500
+                20,
+                30,
+                30,
+                50
             ],
             "evenement_exceptionnel": [
                 10,
@@ -75,31 +75,31 @@
         },
         {
             "horaire_quotidien": [
-                50,
                 60,
-                60,
-                65
+                80,
+                80,
+                100
             ],
             "evenement_exceptionnel": [
-                15,
-                20,
-                20,
-                25
-            ],
-            "nb_arret": 42
-        },
-        {
-            "horaire_quotidien": [
                 30,
                 40,
                 40,
                 50
             ],
+            "nb_arret": 42
+        },
+        {
+            "horaire_quotidien": [
+                80,
+                100,
+                100,
+                130
+            ],
             "evenement_exceptionnel": [
                 10,
-                15,
-                15,
-                20
+                20,
+                20,
+                30
             ],
             "nb_arret": 68
         }

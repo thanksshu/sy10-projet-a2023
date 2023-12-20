@@ -4,7 +4,7 @@ close all;
 
 %% 
 
-entree = jsondecode(fileread("tests/test_3.json"));
+entree = jsondecode(fileread("tests/test_1.json"));
 
 addpath("fis");
 addpath("fis/vars");
@@ -149,10 +149,11 @@ if min(nb_bus_2h, nb_chauffeur_2h) < 6
     disp("pas assez de bus ou de chauffeur pour pouvoir assurer le service");
 else
     disp(nb_bus_envoye_pour_chaque_ligne);
-    while (sum(ceil(nb_bus_envoye_pour_chaque_ligne)) <= min(nb_bus_2h, nb_chauffeur_2h)) == 0
+    while (sum(round(nb_bus_envoye_pour_chaque_ligne)) <= min(nb_bus_2h, nb_chauffeur_2h)) == 0
        nb_bus_envoye_pour_chaque_ligne = ...
-           nb_bus_envoye_pour_chaque_ligne(nb_bus_envoye_pour_chaque_ligne > 0.5) - resolution;
+           nb_bus_envoye_pour_chaque_ligne(nb_bus_envoye_pour_chaque_ligne > 0.51) - resolution;
     end
-    disp(ceil(nb_bus_envoye_pour_chaque_ligne));
+    
+    disp(round(nb_bus_envoye_pour_chaque_ligne));
 end
 
