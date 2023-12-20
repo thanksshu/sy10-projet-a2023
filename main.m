@@ -4,7 +4,7 @@ close all;
 
 %% 
 
-entree = jsondecode(fileread("tests/test_3.json"));
+entree = jsondecode(fileread("tests/test_1.json"));
 
 addpath("fis");
 addpath("fis/vars");
@@ -90,7 +90,7 @@ nbs_personne_in_bus
 nb_bus_envoye_pour_chaque_ligne = zeros(1, nb_ligne);
 for ligne = 1:nb_ligne
     % SF03 : une entrée scalaire et une entrée floue discrète
-    personnes_autres_lignes = (sum(nbs_personne_in_bus) - nbs_personne_in_bus(ligne)) * 0.15;
+    personnes_autres_lignes = (sum(nbs_personne_in_bus) - nbs_personne_in_bus(ligne)) * 0.15; % Hypo: 15% personnes changent ligne
     [~, irr_sf03, ~, ~] = evalfis(fis_sf03, [entree.lignes(ligne).nb_arret personnes_autres_lignes]);
     degrees_nb_p_changer_ligne = gen_degree_declenchement(fis_sf03, irr_sf03);
 
