@@ -4,7 +4,7 @@ close all;
 
 %% 
 
-entree = jsondecode(fileread("tests/test_5.json"));
+entree = jsondecode(fileread("tests/test_1.json"));
 
 addpath("fis");
 addpath("fis/vars");
@@ -85,7 +85,7 @@ end
 
 %% 
 
-nbs_personne_in_bus
+nbs_personne_in_bus;
 
 nb_bus_envoye_pour_chaque_ligne = zeros(1, nb_ligne);
 for ligne = 1:nb_ligne
@@ -144,7 +144,7 @@ nb_bus_2h = round(defuzz(range, discrete_nb_bus_2h, "centroid"));
 
 disp("nb_bus_2h = " + nb_bus_2h);
 disp("nb_chauffeur_2h = " + nb_chauffeur_2h);
-disp(nb_bus_envoye_pour_chaque_ligne);
+% disp(nb_bus_envoye_pour_chaque_ligne);
 
 if min(nb_bus_2h, nb_chauffeur_2h) < 6
     disp("pas assez de bus ou de chauffeur pour pouvoir assurer le service");
